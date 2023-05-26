@@ -1,0 +1,7 @@
+.btn {
+  position: absolute;
+  display: flex;
+  gap: 15px;
+  top: 45px;
+  left: 130px;
+}

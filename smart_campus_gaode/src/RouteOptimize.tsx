@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import { AMap } from "@amap/amap-jsapi-types";
+import "./RouteOptimize.css";
 
-export default function RouteOptimize(props) {
+interface Props {
+  AMap: AMap | null;
+  map: AMap.map | null;
+}
+export default function RouteOptimize(props: Props) {
+  const getData = () => {
+    if (!localStorage.getItem("geojson")) {
+      localStorage.setItem("geojson", "[]");
+    }
 
-  
+    return JSON.parse(localStorage.getItem("geojson") as string);
+  };
+  const { AMap, map } = props;
 
-    
-
-    
-  }
+  const clearMarker = () => {
+    localStorage.removeItem("geojson");
+    alert("ok");
+    location.reload();
+  };
 
   const startAnimation = () => {
     if (!AMap) {
@@ -19,10 +32,8 @@ export default function RouteOptimize(props) {
         policy: AMap.DrivingPolicy.LEAST_TIME,
       });
 
-      const start = new AMap.LngLat(121.521378, 30.83993);
-      const end = new AMap.LngLat(121.517461, 30.838618);
-      //   console.log(driving);
-
+      let start: AMap.LngLat;
+      let end;
       const opts = {
         waypoints: [],
       };
@@ -31,12 +42,25 @@ export default function RouteOptimize(props) {
         geoJSON: null,
       });
       geojson.importData(getData());
-      geojson.eachOverlay(function (item) {
-        opts.waypoints.push(item.getPosition());
+
+      geojson.eachOverlay(function (
+        item: AMap.Overlay,
+        index: AMap.Overlay,
+        collections: AMap.Overlay
+      ) {
+        if (index === 0) {
+          start = item.getPosition();
+        }
+        if (index === collections.length - 1) {
+          end = item.getPosition();
+        }
+
+        if (index !== 0 && index !== collections.length - 1) {
+          opts.waypoints.push(item.getPosition());
+        }
       });
+
       driving.search(start, end, opts, function (status, result) {
-        console.log("status", status);
-        console.log("result", result);
         if (status == "complete") {
           const lineArr = [];
           result.routes[0].steps.forEach(function (item) {
@@ -46,10 +70,9 @@ export default function RouteOptimize(props) {
           const marker = new AMap.Marker({
             map: map,
             position: start,
-            icon: "https://webapi.amap.com/images/car.png",
+            icon: "https://webapi.amap.com/images/0.png",
             offset: new AMap.Pixel(-26, -13),
             angle: 180,
-            // autoRotation(true);
           });
 
           const passedPolyline = new AMap.Polyline({
@@ -67,21 +90,20 @@ export default function RouteOptimize(props) {
             addRotation: true,
           });
         } else {
-          console.log("no");
+          console.log("路线规划产生错误，请重新开始");
         }
       });
     });
-    console.log("start");
   };
 
   return (
-    <div className="input-card">
-      <h4>推荐浏览路线</h4>
-      <div className="input-item">
-        <button className="btn" onClick={startAnimation}>
-          Start
-        </button>
-      </div>
+    <div className="btn">
+      <button className="btn1" onClick={startAnimation}>
+        规划游览路线
+      </button>
+      <button className="btn2" onClick={clearMarker}>
+        清除所有标记
+      </button>
     </div>
   );
 }

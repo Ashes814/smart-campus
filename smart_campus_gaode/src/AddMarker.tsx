@@ -1,17 +1,23 @@
 import React from "react";
+import { AMap } from "@amap/amap-jsapi-types";
 
-export default function AddMarker(props) {
+interface Props {
+  AMap: AMap | null;
+  map: AMap.map | null;
+}
+
+export default function AddMarker(props: Props) {
   // get Marker data from localStroage
   const getData = () => {
     if (!localStorage.getItem("geojson")) {
       localStorage.setItem("geojson", "[]");
     }
 
-    return JSON.parse(localStorage.getItem("geojson"));
+    return JSON.parse(localStorage.getItem("geojson") as string);
   };
 
   // save Marker data from localStroage
-  const saveData = (data) => {
+  const saveData = (data: AMap.OverlayType) => {
     localStorage.setItem("geojson", JSON.stringify(data));
   };
 
@@ -26,7 +32,7 @@ export default function AddMarker(props) {
     // Reading LocalStorage and Rendering Markers that have been added to map
     if (JSON.stringify(getData()) !== "[]") {
       geojson.importData(getData());
-      geojson.eachOverlay(function (item) {
+      geojson.eachOverlay(function (item: AMap.Overlay) {
         item.on("click", () => {
           const ext = item.getExtData();
           const click = ++ext._geoJsonProperties.click;
@@ -42,7 +48,7 @@ export default function AddMarker(props) {
     map.add(geojson);
 
     // Adding new Marker to the map and saving it to LocalStorage
-    map.on("click", (ev) => {
+    map.on("click", (ev: AMap.MapsEvent) => {
       // create new Marker on its position
       const marker = new AMap.Marker({
         position: ev.lnglat,

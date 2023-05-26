@@ -28,8 +28,8 @@ export default function MapContainer() {
         viewMode: "3D",
         zoom: 18,
         center: [121.516611, 30.837185],
-        pitch: 45,
-        mapStyle: "amap://styles/darkblue",
+        pitch: 0,
+        mapStyle: "amap://styles/fresh",
       });
       AMap.plugin(
         ["AMap.ToolBar", "AMap.Scale", "AMap.ControlBar", "AMap.GeoJSON"],
@@ -49,18 +49,14 @@ export default function MapContainer() {
 
   return (
     <>
-      <div id="container" className="map" style={{ height: "800px" }}></div>
+      <div id="container" className="map" style={{ height: "100vh" }}></div>
       {/* <TrafficButton
         map={mapInstance}
         AMap={AMapInstance}
         trafficLayer={trafficLayerInstance}
       /> */}
       <AddMarker map={mapInstance} AMap={AMapInstance} />
-      {/* <RouteOptimize
-        map={mapInstance}
-        AMap={AMapInstance}
-        trafficLayer={trafficLayerInstance}
-      /> */}
+      <RouteOptimize map={mapInstance} AMap={AMapInstance} />
     </>
   );
 }
