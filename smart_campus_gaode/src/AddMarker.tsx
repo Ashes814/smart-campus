@@ -1,4 +1,5 @@
 import React from "react";
+//@ts-ignore
 import { AMap } from "@amap/amap-jsapi-types";
 
 interface Props {

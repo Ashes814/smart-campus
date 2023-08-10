@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+//@ts-ignore
 import { AMap } from "@amap/amap-jsapi-types";
 import "./RouteOptimize.css";
 

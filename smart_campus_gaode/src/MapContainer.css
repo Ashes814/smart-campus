@@ -4,3 +4,11 @@
   width: 100%;
   position: relative;
 }
+
+/* 自定义信息窗口样式 */
+.info-window {
+  background-color: white;
+  color: black;
+  padding: 10px;
+  font-size: 14px;
+}
